@@ -20,8 +20,8 @@ app.add_middleware(
 @app.post('/predict-image/')
 async def predict_image(file: UploadFile = File(...)):
     contents = await file.read()
-    pil_image = PIL.Image.open(io.BytesIO(contents)).convert('L').resize((28, 28), PIL.Image.ANTIALIAS)
+    pil_image = PIL.Image.open(io.BytesIO(contents)).convert('L').resize((28, 28), PIL.Image.Resampling.LANCZOS)
     img_array = np.array(pil_image).reshape((1, 28, 28))
     prediction = model.predict(img_array)
     pred_label = np.argmax(prediction)
-    return {"digit": pred_label}
+    return {"digit": int(pred_label)}
