@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digit Classifier</title>
+</head>
+<body>
+    <input type="file" id="imageFile" accept="image/*">
+    <button onclick="uploadImage()">Classify</button>
+    <p id="prediction_space"></p>
+
+    <script>
+        async function uploadImage() {
+            const input = document.getElementById('imageFile');
+            const file = input.files[0]
+
+            if (!file) {
+                alert("Please select a file to upload.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/predict-image/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                document.getElementById('prediction_space').textContent = `Prediction: ${result.digit}`;
+            } catch (error) {
+                console.error('Error: ', error);
+                alert("Failed");
+            }
+        }
+    </script>
+</body>
+</html>
